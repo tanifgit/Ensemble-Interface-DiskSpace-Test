@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.3 (Build 207U)" ts="2016-05-17 09:58:32">
+<Class name="InterfaceDiskSpace.DataLog">
+<Description><![CDATA[
+Used to persist data usage for the Ensemble interface testing. See <class>InterfaceDiskSpace.Main</class> for details.]]></Description>
+<Super>%Persistent</Super>
+<TimeChanged>64054,56334.126051</TimeChanged>
+<TimeCreated>63703,59232.693793</TimeCreated>
+
+<Property name="BeforeRunData">
+<Description>
+Data captured before the test run in order to compare later</Description>
+<Type>InterfaceDiskSpace.DataCapture</Type>
+</Property>
+
+<Property name="AfterRunData">
+<Description>
+Data captured after the test run to calculate the sizing used for the test</Description>
+<Type>InterfaceDiskSpace.DataCapture</Type>
+</Property>
+
+<Property name="AfterPurgeData">
+<Description>
+Data captured after purge in order to verify everything was purged</Description>
+<Type>InterfaceDiskSpace.DataCapture</Type>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^InterfaceDiskSpace.DataLogD</DataLocation>
+<DefaultData>DataLogDefaultData</DefaultData>
+<IdLocation>^InterfaceDiskSpace.DataLogD</IdLocation>
+<IndexLocation>^InterfaceDiskSpace.DataLogI</IndexLocation>
+<StreamLocation>^InterfaceDiskSpace.DataLogS</StreamLocation>
+<Data name="DataLogDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>BeforeRunData</Value>
+</Value>
+<Value name="3">
+<Value>AfterRunData</Value>
+</Value>
+<Value name="4">
+<Value>AfterPurgeData</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

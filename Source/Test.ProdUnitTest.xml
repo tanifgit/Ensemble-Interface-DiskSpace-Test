@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.3 (Build 207U)" ts="2016-05-17 10:06:10">
+<Class name="InterfaceDiskSpace.Test.ProdUnitTest">
+<Description><![CDATA[
+A unit test class to test the test production for testing the InterfaceDiskSpace framework. 
+<br>See <class>InterfaceDiskSpace.Main</class> for details on the framework and/or <class>InterfaceDiskSpace.Test.Prod.TestProduction</class> about the test production
+<br>It copies the sample \dev\ensemble\RecordMap\RecordMap_Delimited_Input2.txt file and puts it in the Inbound folder of the BS]]></Description>
+<Super>%UnitTest.TestProduction</Super>
+<TimeChanged>64055,36355.940437</TimeChanged>
+<TimeCreated>63941,54288.275007</TimeCreated>
+
+<Parameter name="PRODUCTION">
+<Description>
+Class name of the production.  It must contain the production class name.</Description>
+<Default>InterfaceDiskSpace.Test.Prod.TestProduction</Default>
+</Parameter>
+
+<Parameter name="InDir">
+<Default>C:\Temp\EnsInterfaceDiskSpace\In</Default>
+</Parameter>
+
+<Method name="OnAfterProductionStart">
+<Description>
+Code to run right after the production is started. Used, for example, to call a method that initiates the test.
+If an error status is returned, the test will be aborted and failed and the production will be stopped.
+So if a non fatal error occurs, you may invoke ..LogErrors(status,"OnAfterProductionStart()") and return $$$OK.</Description>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set returnCode = ""
+	Set from = $system.Util.InstallDirectory()_"\dev\ensemble\RecordMap\RecordMap_Delimited_Input2.txt"
+	Set copied = ##class(%File).CopyFile(from,..#InDir,,.returnCode)
+	
+	If 'copied {
+		Quit ..Error("Error copying file from "_from_" to "_..#InDir_" return code: "_returnCode)
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnBeforeProductionStart">
+<Description><![CDATA[
+Code to run right before the production is started.  This is useful to:<br>
+<ul><li>Adjust settings - see method <method>ChangeSetting</method>.</li>
+<li>Create directories - see method <method>CreateMainDirTree</method>.</li>
+<li>Copy files - see method <method>CopyFile</method>.</li>
+<li>Create credentials required by the production - see method <method>CreateCredentials</method>.</li>
+<li>etc.</li></ul>
+If an error status is returned, the test will be aborted and failed.
+So if a non fatal error occurs, you may invoke ..LogErrors(status,"OnBeforeProductionStart()") and return $$$OK.]]></Description>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set returnCode = ""
+	Set created = ##class(%File).CreateDirectoryChain(..#InDir,.returnCode)
+	
+	If 'created {
+		Quit ..Error("Error creating directory "_..#InDir_" return code: "_returnCode)
+	}
+	
+	Set status = ..ChangeSetting(..#PRODUCTION,"FromSystemA","FilePath",..#InDir,1)
+	
+	Quit status
+]]></Implementation>
+</Method>
+</Class>
+</Export>

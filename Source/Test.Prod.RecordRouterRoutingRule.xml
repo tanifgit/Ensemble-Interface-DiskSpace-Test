@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.3 (Build 207U)" ts="2016-05-17 09:57:21">
+<Class name="InterfaceDiskSpace.Test.Prod.RecordRouterRoutingRule">
+<Description><![CDATA[
+A default empty routing rule part of the test production for testing the InterfaceDiskSpaceframework. 
+<br>See <class>InterfaceDiskSpace.Main</class> for details on the framework and/or <class>InterfaceDiskSpace.Test.Prod.TestProduction</class> about the test production]]></Description>
+<Super>Ens.Rule.Definition</Super>
+<TimeChanged>64055,34681.642307</TimeChanged>
+<TimeCreated>63941,53206.154893</TimeCreated>
+
+<Parameter name="RuleAssistClass">
+<Default>EnsLib.MsgRouter.RuleAssist</Default>
+</Parameter>
+
+<XData name="RuleDefinition">
+<XMLNamespace>http://www.intersystems.com/rule</XMLNamespace>
+<Data><![CDATA[
+<ruleDefinition alias="InterfaceDiskSpace.Test.Prod.Record RouterRoutingRule" context="EnsLib.MsgRouter.RoutingEngine" production="InterfaceDiskSpace.Test.Prod.TestProduction">
+<ruleSet name="" effectiveBegin="" effectiveEnd="">
+<rule name="">
+</rule>
+</ruleSet>
+</ruleDefinition>
+]]></Data>
+</XData>
+</Class>
+</Export>

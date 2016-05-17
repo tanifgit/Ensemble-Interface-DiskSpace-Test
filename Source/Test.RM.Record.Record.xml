@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.3 (Build 207U)" ts="2016-05-17 09:57:58">
+<Class name="InterfaceDiskSpace.Test.RM.Record.Record">
+<Description>
+RECORDMAP: Generated from RecordMap 'InterfaceDiskSpace.Test.RM.Record'
+on 2016-01-24 at 14:10:26.854 [2016-01-24 12:10:26.854 UTC]
+by user _SYSTEM</Description>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%Persistent,%XML.Adaptor,Ens.Request,EnsLib.RecordMap.Base</Super>
+<TimeChanged>63941,51026.960215</TimeChanged>
+<TimeCreated>63941,51026.854888</TimeCreated>
+<Inheritance>right</Inheritance>
+
+<Parameter name="INCLUDETOPFIELDS">
+<Default>1</Default>
+</Parameter>
+
+<Property name="ID">
+<Type>%String</Type>
+</Property>
+
+<Property name="Age">
+<Type>%String</Type>
+</Property>
+
+<Property name="DOB">
+<Type>%Date</Type>
+</Property>
+
+<Property name="Color">
+<Type>%String</Type>
+</Property>
+
+<Property name="Name">
+<Type>%String</Type>
+</Property>
+
+<Property name="SSN">
+<Type>%String</Type>
+</Property>
+
+<Property name="HomeCity">
+<Type>%String</Type>
+</Property>
+
+<Property name="HomeState">
+<Type>%String</Type>
+</Property>
+
+<Property name="HomeStreet">
+<Type>%String</Type>
+</Property>
+
+<Property name="HomeZipCode">
+<Type>%String</Type>
+</Property>
+
+<Property name="WorkCity">
+<Type>%String</Type>
+</Property>
+
+<Property name="WorkState">
+<Type>%String</Type>
+</Property>
+
+<Property name="WorkStreet">
+<Type>%String</Type>
+</Property>
+
+<Property name="WorkZipCode">
+<Type>%String</Type>
+</Property>
+
+<Parameter name="RECORDMAPGENERATED">
+<Default>1</Default>
+</Parameter>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^InterfaceDiskSpaceD85F.RecordD</DataLocation>
+<DefaultData>RecordDefaultData</DefaultData>
+<IdLocation>^InterfaceDiskSpaceD85F.RecordD</IdLocation>
+<IndexLocation>^InterfaceDiskSpaceD85F.RecordI</IndexLocation>
+<StreamLocation>^InterfaceDiskSpaceD85F.RecordS</StreamLocation>
+<ExtentSize>2000000</ExtentSize>
+<Data name="RecordDefaultData">
+<Structure>listnode</Structure>
+<Subscript/>
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>ID</Value>
+</Value>
+<Value name="3">
+<Value>%Source</Value>
+</Value>
+<Value name="4">
+<Value>DOB</Value>
+</Value>
+<Value name="5">
+<Value>Color</Value>
+</Value>
+<Value name="6">
+<Value>Name</Value>
+</Value>
+<Value name="7">
+<Value>SSN</Value>
+</Value>
+<Value name="8">
+<Value>HomeCity</Value>
+</Value>
+<Value name="9">
+<Value>HomeState</Value>
+</Value>
+<Value name="10">
+<Value>HomeStreet</Value>
+</Value>
+<Value name="11">
+<Value>HomeZipCode</Value>
+</Value>
+<Value name="12">
+<Value>WorkCity</Value>
+</Value>
+<Value name="13">
+<Value>WorkState</Value>
+</Value>
+<Value name="14">
+<Value>WorkStreet</Value>
+</Value>
+<Value name="15">
+<Value>WorkZipCode</Value>
+</Value>
+<Value name="16">
+<Value>Age</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

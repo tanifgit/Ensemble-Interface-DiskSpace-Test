@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.3 (Build 207U)" ts="2016-05-17 09:58:11">
+<Class name="InterfaceDiskSpace.Test.RM.Record">
+<Description>
+RECORDMAP: Modified during compilation of RecordMap 'InterfaceDiskSpace.Test.RM.Record'
+on 2016-01-24 at 14:10:26.884 [2016-01-24 12:10:26.884 UTC]
+by user _SYSTEM</Description>
+<Super>EnsLib.RecordMap.RecordMap</Super>
+<TimeChanged>63941,51026.885601</TimeChanged>
+<TimeCreated>63941,50830.301927</TimeCreated>
+
+<Method name="GetObject">
+<Description>
+Method to retrieve a record from a stream or device. This method will be generated based on the
+structure of the RecordMap. For testing purposes, a file name may be passed in the pStream argument.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pStream:%IO.DeviceStream,*pObject:%RegisteredObject,pTimeout:%Numeric=-1,&pLookAhead:%String="",pLabelFound:%Boolean=0]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Try {
+		Set tStatus = $$$OK
+		Set pObject = $$$NULLOREF
+		If '$IsObject(pStream) {
+			Set tFilename = pStream
+			Set pStream = ##class(%IO.FileStream).%New()
+			Do pStream.Open(tFilename,,pTimeout,"UTF-8", .tStatus)
+			If $$$ISERR(tStatus) Quit
+		}
+		Set tObjectName = $parameter($this,"OBJECTNAME")
+		Set tObject = $classmethod(tObjectName,"%New")
+		If '$IsObject(tObject) {
+			Set tStatus = $$$ERROR($$$CannotCreateObject,tObjectName)
+			Quit
+		}
+		Set tObject.%Source = pStream.Name
+		Set tGetTopFields = $parameter(tObject,"INCLUDETOPFIELDS")
+		If pStream.AtEnd {
+			Set tStatus = $$$ERROR($$$EnsRecordMapErrStreamAtEnd, pStream.Name)
+			Quit
+		}
+		Set pStream.CharEncoding = "UTF-8"
+
+		#; Parse incoming stream
+		Set tStatus = ..GetRecord(pStream, tObject, tGetTopFields, pTimeout, .pLookAhead, pLabelFound)
+		If $$$ISERR(tStatus) Quit
+	}
+	Catch ex {
+		Set tStatus = ex.AsStatus()
+	}
+	If $$$ISERR(tStatus) { Set pObject = $$$NULLOREF }
+	Else { Set pObject = tObject }
+	Quit tStatus
+]]></Implementation>
+</Method>
+
+<Method name="PutObject">
+<Description>
+Method to write a record to a stream or device. This method will be generated based on the
+structure of the RecordMap. For testing purposes, a file name may be passed in the pStream argument.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pStream:%IO.DeviceStream,pObject:%RegisteredObject,pFlush:%Boolean=1,&pPadArray:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Try {
+		Set tStatus = $$$OK
+		If '$IsObject(pStream) {
+			Set tFilename = pStream
+			Set pStream = ##class(%IO.FileStream).%New()
+			Do pStream.Open(tFilename,"WAE",,"UTF-8", .tStatus)
+			If $$$ISERR(tStatus) Quit
+		}
+		Set tHasTopFields = $parameter(pObject,"INCLUDETOPFIELDS")
+		Set pStream.CharEncoding = "UTF-8"
+
+		Set tStatus = ..PutRecord(pStream, pObject, tHasTopFields, .pPadArray)
+		If $$$ISERR(tStatus) Quit
+		If pFlush Do pStream.Flush(.tStatus)
+		If $$$ISERR(tStatus) Quit
+	}
+	Catch ex {
+		Set tStatus = ex.AsStatus()
+	}
+	Quit tStatus
+]]></Implementation>
+</Method>
+
+<Parameter name="OBJECTNAME">
+<Default>InterfaceDiskSpace.Test.RM.Record.Record</Default>
+</Parameter>
+
+<Method name="GetRecord">
+<Description>
+Internal helper method to perform parse of incoming data</Description>
+<Internal>1</Internal>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pStream:%IO.DeviceStream,pObject:%RegisteredObject,pGetTopFields:%Boolean,pTimeout:%Numeric,&pLookAhead:%String="",pLabelFound:%Boolean=0]]></FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tStatus = $$$OK
+	If pLabelFound { Set tRecLabel = "" } 
+	Else { Set tRecLabel = "" } 
+	Set tStatus = ..chunkRecord(pStream, .tRecordData, .tCharCount, "", pTimeout, $char(13,10), tRecLabel, .pLookAhead, "")
+	If $$$ISERR(tStatus) Quit tStatus
+	Set tMaxLocal = $$$MaxLocalLength
+	Set tRecordData("charcount") = +$get(tCharCount)
+	Set tCurrChunk = 1
+	Set tTopPiece = 1
+	Set tCurrSep = 1
+	Set tStrings = 1
+	Set tSeps = $listbuild($char(59))
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Else {
+		Set tCurrString = tRecordData(tCurrChunk)
+		Set tCurrPiece = 1
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.ID = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.Age = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.DOB =  pObject.DOBDisplayToLogical(tCurrString)
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.Color = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.Name = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.SSN = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.HomeCity = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.HomeState = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.HomeStreet = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.HomeZipCode = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.WorkCity = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.WorkState = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.WorkStreet = tCurrString
+	}
+	If '$data(tRecordData(tCurrChunk, "block")) {
+		Set tCurrString = $piece(tRecordData(tCurrChunk), $char(59), tTopPiece)
+	}
+	Do ..checkMerge(.tCurrChunk, .tRecordData, .tCurrString, $char(59), .tTopPiece)
+	If pGetTopFields {
+		Set pObject.WorkZipCode = tCurrString
+	}
+	Quit tStatus
+]]></Implementation>
+</Method>
+
+<Method name="PutRecord">
+<Description>
+Internal helper method to output object to a stream</Description>
+<Internal>1</Internal>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pStream:%IO.DeviceStream,pObject:%RegisteredObject,pHasTopFields:%Boolean,&pPadArray:%String]]></FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set tStatus = $$$OK
+	Do pStream.Write($select(pHasTopFields: pObject.ID,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.Age,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.DOBLogicalToDisplay(pObject.DOB),1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.Color,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.Name,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.SSN,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.HomeCity,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.HomeState,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.HomeStreet,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.HomeZipCode,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.WorkCity,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.WorkState,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.WorkStreet,1: ""),0)
+	Do pStream.Write($char(59) _ $select(pHasTopFields: pObject.WorkZipCode,1: ""),0)
+	Do pStream.Write($char(13,10), 0, .tStatus)
+	If $$$ISERR(tStatus) Quit tStatus
+	Quit tStatus
+]]></Implementation>
+</Method>
+
+<Method name="GetGeneratedClasses">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>*pClasses:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Kill pClasses
+	Set pClasses("InterfaceDiskSpace.Test.RM.Record.Record")=""
+	Set pClasses($classname())=""
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="getIdentifier">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[""
+]]></Implementation>
+</Method>
+
+<Method name="getType">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>EnsLib.RecordMap.Model.DataType.RecordType</ReturnType>
+<Implementation><![CDATA["delimited"
+]]></Implementation>
+</Method>
+
+<XData name="RecordMap">
+<XMLNamespace>http://www.intersystems.com/Ensemble/RecordMap</XMLNamespace>
+<Data><![CDATA[
+<Record xmlns="http://www.intersystems.com/Ensemble/RecordMap" name="InterfaceDiskSpace.Test.RM.Record" type="delimited" char_encoding="UTF-8" targetClassname="InterfaceDiskSpace.Test.RM.Record.Record" recordTerminator="\x0d\x0a">
+  <Separators>
+    <Separator>;</Separator>
+  </Separators>
+  <Field name="ID" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="Age" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="DOB" required="0" datatype="%Date" repeating="0">
+  </Field>
+  <Field name="Color" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="Name" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="SSN" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="HomeCity" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="HomeState" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="HomeStreet" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="HomeZipCode" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="WorkCity" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="WorkState" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="WorkStreet" required="0" datatype="%String" repeating="0">
+  </Field>
+  <Field name="WorkZipCode" required="0" datatype="%String" repeating="0">
+  </Field>
+</Record>
+]]></Data>
+</XData>
+</Class>
+</Export>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.3 (Build 207U)" ts="2016-05-17 09:58:27">
+<Class name="InterfaceDiskSpace.DataCapture">
+<Description><![CDATA[
+Used to persist data usage for the Ensemble interface testing. See <class>InterfaceDiskSpace.Main</class> for details and <class>InterfaceDiskSpace.DataLog</class> that uses this one.]]></Description>
+<Super>%Persistent</Super>
+<TimeChanged>64054,52799.883409</TimeChanged>
+<TimeCreated>63704,59581.460062</TimeCreated>
+
+<Property name="CaptureTime">
+<Description>
+The time of the capture</Description>
+<Type>%TimeStamp</Type>
+</Property>
+
+<Property name="DBSize">
+<Description>
+Database size used</Description>
+<Type>%Float</Type>
+</Property>
+
+<Property name="JournalSize">
+<Description>
+Journal file size used</Description>
+<Type>%Float</Type>
+</Property>
+
+<Property name="JournalSpaceUsed">
+<Description>
+The space used by the Journal records</Description>
+<Type>%Float</Type>
+</Property>
+
+<Property name="GlobalSizes">
+<Description>
+An array detailing the size of each global (the Key in the array is the global name and the value is the size)</Description>
+<Type>%Float</Type>
+<Collection>array</Collection>
+</Property>
+
+<Property name="JournalProfileSizes">
+<Description>
+An array detailing the size each global takes up in the Journal (the Key in the array is the global name and the value is the size)</Description>
+<Type>%Float</Type>
+<Collection>array</Collection>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^InterfaceDiskS13C5.DataCaptureD</DataLocation>
+<DefaultData>DataCaptureDefaultData</DefaultData>
+<IdLocation>^InterfaceDiskS13C5.DataCaptureD</IdLocation>
+<IndexLocation>^InterfaceDiskS13C5.DataCaptureI</IndexLocation>
+<StreamLocation>^InterfaceDiskS13C5.DataCaptureS</StreamLocation>
+<Data name="DataCaptureDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>CaptureTime</Value>
+</Value>
+<Value name="3">
+<Value>DBSize</Value>
+</Value>
+<Value name="4">
+<Value>JournalSize</Value>
+</Value>
+<Value name="5">
+<Value>Stage</Value>
+</Value>
+<Value name="6">
+<Value>JournalSpaceUsed</Value>
+</Value>
+</Data>
+<Data name="GlobalSizes">
+<Attribute>GlobalSizes</Attribute>
+<Structure>subnode</Structure>
+<Subscript>"GlobalSizes"</Subscript>
+</Data>
+<Data name="JournalProfileSizes">
+<Attribute>JournalProfileSizes</Attribute>
+<Structure>subnode</Structure>
+<Subscript>"JournalProfileSizes"</Subscript>
+</Data>
+</Storage>
+
+<Property name="Stage">
+<Type>%String</Type>
+</Property>
+</Class>
+</Export>
