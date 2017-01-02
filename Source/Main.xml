@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 708U)" ts="2017-01-02 16:25:35">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 708U)" ts="2017-01-02 16:49:37">
 <Class name="InterfaceDiskSpace.Main">
 <Description><![CDATA[
 A framework to test for disk space consumption for Ensemble interfaces.
@@ -49,9 +49,12 @@ It also includes two arrays of specific global data usage sizes - the global siz
 <li>GlobalSizes</li>
 <li>JournalProfileSizes</li>
 </ul>
+The key of these arrays is the global name, as well as, where possible, the class name related to this global.
+<br>   E.g. <code>MyPackage.MyClassD<font style="background-color:yellow;">|</font>MyPackage.MyClass.cls</code>
+<br><br>
 There is a test Production for testing purposes of this framework - under package <class>InterfaceDiskSpace.Test</class>]]></Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64285,58897.228387</TimeChanged>
+<TimeChanged>64285,60543.301214</TimeChanged>
 <TimeCreated>63699,65383.942633</TimeCreated>
 
 <Method name="PreTestRun">
@@ -371,7 +374,7 @@ It uses these parameters:
 
 <Method name="Report">
 <Description><![CDATA[
-Reports the data collected 
+Reports the data collected (where possible adds to the global name also the related class name)
 <br> for example:
 <br>
 <code>
@@ -387,31 +390,31 @@ Reports the data collected
 <br>Globals growth
 <br>----------------------
 <table>
-<tr><td>Ens.MessageHeaderD</td><td>.015</td></tr>
-<tr><td>Ens.MessageHeaderI</td><td>.003</td></tr>
-<tr><td>Ens.Rule.LogD</td><td>.011</td></tr>
-<tr><td>Ens.Rule.LogI</td><td>.002</td></tr>
-<tr><td>Ens.Util.LogD</td><td>.002</td></tr>
-<tr><td>InterfaceDiskSpaceD85F.RecordD</td><td>.015</td></tr>
+<tr><td>Ens.MessageHeaderD</td><td></td><td>.015</td></tr>
+<tr><td>Ens.MessageHeaderI</td><td></td><td>.003</td></tr>
+<tr><td>Ens.Rule.LogD</td><td></td><td>.011</td></tr>
+<tr><td>Ens.Rule.LogI</td><td></td><td>.002</td></tr>
+<tr><td>Ens.Util.LogD</td><td></td><td>.002</td></tr>
+<tr><td>InterfaceDiskSpaceD85F.RecordD</td><td>InterfaceDiskSpace.Test.RM.Record.Record.cls</td><td>.015</td></tr>
 </table>
 <br> 
 <br>Journal Profile
 <br>----------------------
 <table>
-<tr><td>Ens.BusinessProcessD</td><td>73804</td></tr>
-<tr><td>Ens.BusinessProcessI</td><td>24780</td></tr>
-<tr><td>Ens.JobRequest</td><td>16</td></tr>
-<tr><td>Ens.JobStatus</td><td>48</td></tr>
-<tr><td>Ens.MessageHeaderD</td><td>20056</td></tr>
-<tr><td>Ens.MessageHeaderI</td><td>66464</td></tr>
-<tr><td>Ens.Queue</td><td>440</td></tr>
-<tr><td>Ens.Rule.LogD</td><td>20912</td></tr>
-<tr><td>Ens.Rule.LogI</td><td>26512</td></tr>
-<tr><td>Ens.Runtime</td><td>13568</td></tr>
-<tr><td>Ens.Suspended</td><td>80</td></tr>
-<tr><td>Ens.Util.LogD</td><td>4204</td></tr>
-<tr><td>Ens.Util.LogI</td><td>4232</td></tr>
-<tr><td>InterfaceDiskSpaceD85F.RecordD</td><td>22588</td></tr>
+<tr><td>Ens.BusinessProcessD</td><td></td><td>73804</td></tr>
+<tr><td>Ens.BusinessProcessI</td><td></td><td>24780</td></tr>
+<tr><td>Ens.JobRequest</td><td></td><td>16</td></tr>
+<tr><td>Ens.JobStatus</td><td></td><td>48</td></tr>
+<tr><td>Ens.MessageHeaderD</td><td></td><td>20056</td></tr>
+<tr><td>Ens.MessageHeaderI</td><td></td><td>66464</td></tr>
+<tr><td>Ens.Queue</td><td></td><td>440</td></tr>
+<tr><td>Ens.Rule.LogD</td><td></td><td>20912</td></tr>
+<tr><td>Ens.Rule.LogI</td><td></td><td>26512</td></tr>
+<tr><td>Ens.Runtime</td><td></td><td>13568</td></tr>
+<tr><td>Ens.Suspended</td><td></td><td>80</td></tr>
+<tr><td>Ens.Util.LogD</td><td></td><td>4204</td></tr>
+<tr><td>Ens.Util.LogI</td><td></td><td>4232</td></tr>
+<tr><td>InterfaceDiskSpaceD85F.RecordD</td><td>InterfaceDiskSpace.Test.RM.Record.Record.cls</td><td>22588</td></tr>
 </table>
 <br> 
 <br>Globals remaining after purge
