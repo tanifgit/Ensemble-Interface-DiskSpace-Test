@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.3 (Build 207U)" ts="2016-05-17 10:04:52">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 708U)" ts="2017-01-02 16:25:35">
 <Class name="InterfaceDiskSpace.Main">
 <Description><![CDATA[
 A framework to test for disk space consumption for Ensemble interfaces.
@@ -51,7 +51,7 @@ It also includes two arrays of specific global data usage sizes - the global siz
 </ul>
 There is a test Production for testing purposes of this framework - under package <class>InterfaceDiskSpace.Test</class>]]></Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64055,36281.11892</TimeChanged>
+<TimeChanged>64285,58897.228387</TimeChanged>
 <TimeCreated>63699,65383.942633</TimeCreated>
 
 <Method name="PreTestRun">
@@ -449,32 +449,40 @@ Reports the data collected
 		Write !,"Globals growth",!
 		Write "----------------------",!
 		Set globalName=""
+		Set globalRef=""
 		// We'll loop over the globals and calculate the difference in each between before after and before the test
-		Set sizeAfter = dataLog.AfterRunData.GlobalSizes.GetNext(.globalName)
+		Set sizeAfter = dataLog.AfterRunData.GlobalSizes.GetNext(.globalRef)
+		
 		// We want to skip globals that are related to this data capture, as well as UnitTest [same behavior also later]
-		While globalName'="" {
+		While globalRef'="" {
+			Set globalName = $Piece(globalRef,"|",1)
+			Set className = $Piece(globalRef,"|",2)
 			If ((globalName="InterfaceDiskS13C5.DataCaptureD") ||
 				(globalName="InterfaceDiskSpace.DataLogD") ||
 				 (globalName="UnitTest.Result") ||
 				 (globalName="UnitTest.ResultI")) {
 					 // Skip...
 				 } Else {
-				Set sizeBefore = dataLog.BeforeRunData.GlobalSizes.GetAt(globalName)	
+				Set sizeBefore = dataLog.BeforeRunData.GlobalSizes.GetAt(globalRef)	
 				
 				Set globalSizeUsed = sizeAfter-sizeBefore
 				If globalSizeUsed>0 {
-					Write globalName,?35,globalSizeUsed,!
+					Write globalName,?35,className,?85,globalSizeUsed,!
 				}
 				 }
-			Set sizeAfter = dataLog.AfterRunData.GlobalSizes.GetNext(.globalName)
+			Set sizeAfter = dataLog.AfterRunData.GlobalSizes.GetNext(.globalRef)
 		}
 		
 		Write !,"Journal Profile",!
 		Write "----------------------",!
 		Set globalName=""
+		Set globalRef=""
 		// loop over the global entries
-		Set journalGlobalSize = dataLog.AfterRunData.JournalProfileSizes.GetNext(.globalName)
-		While globalName'="" {
+		Set journalGlobalSize = dataLog.AfterRunData.JournalProfileSizes.GetNext(.globalRef)
+		
+		While globalRef'="" {
+			Set globalName = $Piece(globalRef,"|",1)
+			Set className = $Piece(globalRef,"|",2)
 			If ((globalName="InterfaceDiskS13C5.DataCaptureD") ||
 				(globalName="InterfaceDiskSpace.DataLogD") ||
 				 (globalName="UnitTest.Result") ||
@@ -483,38 +491,72 @@ Reports the data collected
 				 (globalName="rINDEXCLASS")) {
 					 // Skip...
 				 } Else {
-					Write globalName,?35,journalGlobalSize,!
+					Write globalName,?35,className,?85,journalGlobalSize,!
 				
 				 }
-			Set journalGlobalSize = dataLog.AfterRunData.JournalProfileSizes.GetNext(.globalName)
+			Set journalGlobalSize = dataLog.AfterRunData.JournalProfileSizes.GetNext(.globalRef)
 		}
 		
 		// Later - check what happened after purge - which globals did not return to original size?
 		
 		Write !,"Globals remaining after purge",!
 		Write "----------------------",!
-		Set globalName=""
-		Set sizeAfter = dataLog.AfterPurgeData.GlobalSizes.GetNext(.globalName)
-		While globalName'="" {
+		Set globalRef=""
+		Set sizeAfter = dataLog.AfterPurgeData.GlobalSizes.GetNext(.globalRef)
+		While globalRef'="" {
+			Set globalName = $Piece(globalRef,"|",1)
+			Set className = $Piece(globalRef,"|",2)
 			If ((globalName="InterfaceDiskS13C5.DataCaptureD") ||
 				(globalName="InterfaceDiskSpace.DataLogD") ||
 				 (globalName="UnitTest.Result") ||
 				 (globalName="UnitTest.ResultI")) {
 					 // Skip...
 				 } Else {
-				Set sizeBefore = dataLog.BeforeRunData.GlobalSizes.GetAt(globalName)	
+				Set sizeBefore = dataLog.BeforeRunData.GlobalSizes.GetAt(globalRef)	
 				
 				Set globalSizeUsed = sizeAfter-sizeBefore
 				If globalSizeUsed>0 {
-					Write globalName,?35,globalSizeUsed,!
+					Write globalName,?35,className,?85,globalSizeUsed,!
 				}
 				 }
-			Set sizeAfter = dataLog.AfterPurgeData.GlobalSizes.GetNext(.globalName)
+			Set sizeAfter = dataLog.AfterPurgeData.GlobalSizes.GetNext(.globalRef)
 		}
 		
 		/// Check if can get actual Journal size used.
 		
 		
+	} Catch ex {
+		Set status = ex.AsStatus()	
+	}
+	Quit status
+]]></Implementation>
+</Method>
+
+<Method name="GetClassName">
+<Description><![CDATA[
+Internal method used by the class to find the class (aka Extent) name used by a global
+<br>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>globalName:%String="",*className:%String=""</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	#dim ex As %Exception.SystemException
+	#dim status As %Status = $$$OK
+	
+	Try { 
+		#dim %sqlcontext As %Library.ProcedureContext = ""
+		// Find extent name (class names) using this global
+		Set className = ""
+		
+		Do ##class(%ExtentMgr.Util).GlobalUses("^"_globalName)
+		
+		If $IsObject(%sqlcontext) {
+			If %sqlcontext.%Next() {
+				Set className = %sqlcontext.%Get("UsedByExtent")
+			}
+		}
 	} Catch ex {
 		Set status = ex.AsStatus()	
 	}
@@ -560,15 +602,21 @@ It collects the following info:
 		 
 			 
 		 
+		 
 		 While result.%Next() {
 			Set globalName = result.%Get("Name")
 			Set globalSize = result.%Get("Used MB")
 			
-			Do captureData.GlobalSizes.SetAt(globalSize,globalName)
+			// Find extent name (class names) using this global
+			Set status = ..GetClassName(globalName,.className)
+			If $$$ISERR(status) Quit
+			
+			Set globalRef = globalName _ "|" _ className
+			Do captureData.GlobalSizes.SetAt(globalSize,globalRef)
 			// Log Global Size
 					 
 		 }		
-		
+		If $$$ISERR(status) Quit
 		
 		
 		//Need to move to %SYS namespace in order to run the Freespace query
@@ -655,10 +703,22 @@ It collects the following info:
 				If database=directory {
 					Set globalJournalName = ""
 					Set globalJournalName=$Order(profile(database,globalJournalName))
+					
+					
+					
 					While globalJournalName'="" {
 						Set spaceUsed = profile(database,globalJournalName)
-						Do captureData.JournalProfileSizes.SetAt(spaceUsed,globalJournalName)
+						
+						// Find extent name (class names) using this global
+						Set journalClassName = ""
+						Set status = ..GetClassName(globalJournalName,.journalClassName)
+						If $$$ISERR(status) Quit
+			
+						Set journalGlobalRef = globalJournalName _ "|" _ journalClassName
+						
+						Do captureData.JournalProfileSizes.SetAt(spaceUsed,journalGlobalRef)
 						Set totalJournalUSedSpace = totalJournalUSedSpace + spaceUsed
+						
 						Set globalJournalName=$Order(profile(database,globalJournalName))
 					}
 				}
