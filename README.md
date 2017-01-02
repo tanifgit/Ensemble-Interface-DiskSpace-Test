@@ -9,7 +9,7 @@ See class reference (specifically of the InterfaceDiskSpace.Main class) for docu
 
 Here is a sample Output -
 You can see for example it points out an issue with certain persistent entities referenced by Web Service responses that are not deleted by default by the Purge process.
-
+```
 ENSEMBLE>write ##class(InterfaceDiskSpace.Main).PreTestRun(.runId)
  
 Stopping Production...
@@ -99,3 +99,4 @@ Globals remaining after purge
 ITest.Proxy.s0.AddressD            ITest.Proxy.s0.Address.cls                        .004
 ITest.Proxy.s0.PersonD             ITest.Proxy.s0.Person.cls                         .003
 1
+```
